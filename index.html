@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background-color: rgba(0, 0, 0, 0.734);"> <!-- Set your desired background color here -->
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center" style="border-radius: 10px; padding: 10px; background-color: cadetblue;">Aplicativo de Lista de Livros</h2>
+    
+    <!-- Form to add a new book -->
+    <form id="bookForm">
+        <div class="form-row">
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="title" placeholder="Título do Livro" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" id="author" placeholder="Autor" required>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Adicionar Livro</button>
+            </div>
+        </div>
+    </form>
+
+    <hr style="background-color: yellow;"> <!-- Set your desired background color here -->
+
+    <!-- Display the book list -->
+    <ul id="bookList" class="list-group">
+        <!-- Book items will be added dynamically here -->
+    </ul>
+</div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap Modal for Editing -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Livro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editTitle">Título do Livro</label>
+                    <input type="text" class="form-control" id="editTitle">
+                </div>
+                <div class="form-group">
+                    <label for="editAuthor">Autor</label>
+                    <input type="text" class="form-control" id="editAuthor">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Salvar Mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript code for the book list app
+    document.getElementById('bookForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Get input values
+        var title = document.getElementById('title').value;
+        var author = document.getElementById('author').value;
+
+        // Create new list item with delete and edit buttons
+        var listItem = document.createElement('li');
+        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        listItem.textContent = title + ' by ' + author;
+
+        // Create delete button
+        var deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger btn-sm ml-2';
+        deleteButton.textContent = 'Excluir';
+        deleteButton.addEventListener('click', function () {
+            listItem.remove();
+        });
+
+        // Create edit button
+        var editButton = document.createElement('button');
+        editButton.className = 'btn btn-warning btn-sm ml-2';
+        editButton.textContent = 'Editar';
+        editButton.setAttribute('data-toggle', 'modal');
+        editButton.setAttribute('data-target', '#editModal');
+        editButton.addEventListener('click', function () {
+            // Populate the modal inputs with the current book information
+            var bookInfo = listItem.textContent.split(' by ');
+            document.getElementById('editTitle').value = bookInfo[0];
+            document.getElementById('editAuthor').value = bookInfo[1];
+        });
+
+        // Append buttons to the list item
+        var buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'd-flex';
+        buttonsContainer.appendChild(editButton);
+        buttonsContainer.appendChild(deleteButton);
+        listItem.appendChild(buttonsContainer);
+
+        // Add list item to the book list
+        document.getElementById('bookList').appendChild(listItem);
+
+        // Clear input fields
+        document.getElementById('title').value = '';
+        document.getElementById('author').value = '';
+    });
+
+    // Save changes in the modal
+    document.getElementById('saveChangesBtn').addEventListener('click', function () {
+        // Get the edited values from the modal
+        var editedTitle = document.getElementById('editTitle').value;
+        var editedAuthor = document.getElementById('editAuthor').value;
+
+        // Update the list item text
+        var selectedListItem = document.querySelector('.list-group-item.active');
+        selectedListItem.textContent = editedTitle + ' by ' + editedAuthor;
+
+        // Close the modal
+        $('#editModal').modal('hide');
+    });
+</script>
+
+</body>
+</html>
